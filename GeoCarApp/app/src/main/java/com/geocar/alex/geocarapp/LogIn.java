@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.geocar.alex.geocarapp.dto.LoginResult;
+import com.geocar.alex.geocarapp.helpers.ToastHelper;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 import com.geocar.alex.geocarapp.web.WebRequest;
 import com.geocar.alex.geocarapp.web.WebResponse;
@@ -62,13 +64,13 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     }
 
     private void doSignIn()
-        //TODO: Send call to backend
         {
         LogCat.log(this, "HERE");
 
         try
         {
-            WebRequest.send("http://geocar.is-a-techie.com/api/marco", "", this);
+            String data = "{\"EmailAddress\":\"" + mEmail.getText().toString() + "\", \"UserPassword\":\"" + mPassword.getText().toString() + "\"}";
+            WebRequest.send("http://geocar.is-a-techie.com/api/login", data, this);
         }
         catch (Exception ex)
         {
@@ -87,7 +89,16 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     {
         try
         {
-            LogCat.log(this, ((WebResponse) result).getBody());
+            LoginResult _result = new LoginResult(((WebResponse) result).getBody());
+
+            if (!_result.isSuccessful())
+            {
+                ToastHelper.show(this, "Login unsuccessful");
+            }
+            else
+            {
+                ToastHelper.show(this, "Login successful");
+            }
         }
         catch (IOException ex)
         {
@@ -99,21 +110,21 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     protected void onResume()
     {
         super.onResume();
-        estimoteManager.startRanging(getApplicationContext());
+        //estimoteManager.startRanging(getApplicationContext());
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        estimoteManager.stopRanging(getApplicationContext());
+        //estimoteManager.stopRanging(getApplicationContext());
     }
 
     @Override
     protected void onDestroy()
     {
         super.onDestroy();
-        estimoteManager.stopRanging(getApplicationContext());
+        //estimoteManager.stopRanging(getApplicationContext());
     }
 
 }
