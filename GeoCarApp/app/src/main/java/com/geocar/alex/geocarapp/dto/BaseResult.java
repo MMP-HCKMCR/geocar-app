@@ -15,7 +15,7 @@ public class BaseResult
 
     public boolean isSuccessful()
     {
-        return errorMessage.equals("");
+        return errorMessage == null || errorMessage.equals("");
     }
 
 }

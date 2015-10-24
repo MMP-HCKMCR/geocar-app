@@ -64,9 +64,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     }
 
     private void doSignIn()
-        {
-        LogCat.log(this, "HERE");
-
+    {
         try
         {
             String data = "{\"EmailAddress\":\"" + mEmail.getText().toString() + "\", \"UserPassword\":\"" + mPassword.getText().toString() + "\"}";
@@ -98,6 +96,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
             else
             {
                 Intent i = new Intent(this, Home.class);
+                i.putExtra("SessionId", _result.sessionId);
                 startActivity(i);
             }
         }

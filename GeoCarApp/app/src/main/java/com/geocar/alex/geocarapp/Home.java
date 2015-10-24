@@ -12,52 +12,69 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity
+{
 
-    private ListView mDrawerList;
-    private ArrayAdapter<String> mAdapter;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private String mActivityTitle;
+    private ListView mDrawerList = null;
+    private ArrayAdapter<String> mAdapter = null;
+    private ActionBarDrawerToggle mDrawerToggle = null;
+    private DrawerLayout mDrawerLayout = null;
+    private String mActivityTitle = "Home";
+    private String mSessionId = "";
 
     @Override
-    protected void onCreate(Bundle bundle){
+    protected void onCreate(Bundle bundle)
+    {
         super.onCreate(bundle);
         setContentView(R.layout.content_home);
 
+        mSessionId = getIntent().getExtras().getString("SessionId");
+
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        mActivityTitle = getTitle().toString();
+        mActivityTitle = "Home";
 
         addDrawerItems();
         setupDrawer();
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF9400D3")));
+        setActionBarName(mActivityTitle);
     }
 
-    private void addDrawerItems() {
+    private void setActionBarName(String name)
+    {
+        if (name.toLowerCase().equals("home"))
+        {
+            name = "Welcome Someone";
+        }
+
+        getSupportActionBar().setTitle(name);
+    }
+
+    private void addDrawerItems()
+    {
         String[] osArray = { "Leaderboard", "Transactions", "Achievements", "Sign Out" };
-        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
     }
 
-    private void setupDrawer() {
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.drawer_open, R.string.drawer_close) {
-
-            public void onDrawerOpened(View drawerView) {
+    private void setupDrawer()
+    {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
+        {
+            public void onDrawerOpened(View drawerView)
+            {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation");
+                setActionBarName("Navigation");
                 invalidateOptionsMenu();
             }
 
-            public void onDrawerClosed(View view) {
+            public void onDrawerClosed(View view)
+            {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mActivityTitle);
+                setActionBarName(mActivityTitle);
                 invalidateOptionsMenu();
             }
         };
@@ -67,19 +84,16 @@ public class Home extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             return true;
         }
 
-        // Activate the navigation drawer toggle
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+        if (mDrawerToggle.onOptionsItemSelected(item))
+        {
             return true;
         }
 
@@ -87,13 +101,15 @@ public class Home extends AppCompatActivity {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(Configuration newConfig)
+    {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
