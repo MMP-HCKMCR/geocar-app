@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.geocar.alex.geocarapp.dto.LoginResult;
@@ -15,9 +16,6 @@ import com.geocar.alex.geocarapp.helpers.ToastHelper;
 import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 import com.geocar.alex.geocarapp.web.WebRequest;
-import com.geocar.alex.geocarapp.web.WebResponse;
-
-import java.io.IOException;
 
 public class LogIn extends AppCompatActivity implements View.OnClickListener, IAsyncTask.OnPostExecuteListener
 {
@@ -26,6 +24,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     private EditText mPassword = null;
     private Button mSignIn = null;
     private TextView mRegister = null;
+    private ProgressBar mProgress = null;
 
 
     @Override
@@ -35,6 +34,9 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
         setContentView(R.layout.activity_log_in);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mProgress = (ProgressBar)findViewById(R.id.progress);
+        mProgress.setVisibility(View.INVISIBLE);
 
         mEmail = (EditText)findViewById(R.id.email_txt);
         mPassword = (EditText)findViewById(R.id.password_txt);
@@ -64,6 +66,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     {
         try
         {
+            mProgress.setVisibility(View.VISIBLE);
             String data = "{\"EmailAddress\":\"" + mEmail.getText().toString() + "\", \"UserPassword\":\"" + mPassword.getText().toString() + "\"}";
             WebRequest.send("http://geocar.is-a-techie.com/api/login", data, "login", this);
         }
@@ -84,6 +87,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     {
         try
         {
+            mProgress.setVisibility(View.INVISIBLE);
             LoginResult _result = new LoginResult(((JsonDocument)result));
 
             if (!_result.isSuccessful())

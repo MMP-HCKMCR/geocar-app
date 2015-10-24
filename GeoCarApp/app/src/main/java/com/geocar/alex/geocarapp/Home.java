@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import com.geocar.alex.geocarapp.dto.LogOutResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
+import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 import com.geocar.alex.geocarapp.web.WebRequest;
 import com.geocar.alex.geocarapp.web.WebResponse;
@@ -134,6 +135,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             LogCat.error(this, ex);
         }
     }
+
     private void setupDrawer()
     {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
@@ -204,20 +206,28 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     @Override
     public <T> void onPostExecute(IAsyncTask asyncTask, T result, String tag)
     {
-        if(tag.equals("logout")) {
-            try {
-                LogOutResult _result = new LogOutResult(((WebResponse) result).getBody());
+        try
+        {
+            if(tag.equals("logout"))
+            {
+                    LogOutResult _result = new LogOutResult((JsonDocument)result);
 
-                if (!_result.isSuccessful()) {
-                    ToastHelper.show(this, "Logout unsuccessful");
-                } else {
-                    Intent i = new Intent(this, LogIn.class);
-                    mSessionId = "";
-                    startActivity(i);
-                }
-            } catch (IOException ex) {
-                LogCat.error(this, ex);
+                    if (!_result.isSuccessful())
+                    {
+                        ToastHelper.show(this, "Logout unsuccessful");
+                    }
+                    else
+                    {
+                        Intent i = new Intent(this, LogIn.class);
+                        mSessionId = "";
+                        startActivity(i);
+                        finish();
+                    }
             }
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
         }
     }
 }
