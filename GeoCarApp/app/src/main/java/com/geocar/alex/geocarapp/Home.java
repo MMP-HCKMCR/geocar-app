@@ -263,7 +263,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     {
         try
         {
-            if(tag.equals("logout"))
+            if (tag.equals("logout"))
             {
                 LogOutResult _result = new LogOutResult((JsonDocument)result);
 
@@ -281,15 +281,24 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             }
             else if(tag.equals("getleaderboard"))
             {
-                LeaderboardResult _result = new LeaderboardResult((JsonDocument)result);
-                if(!_result.isSuccessful())
-                {
+                LeaderboardResult _result = new LeaderboardResult((JsonDocument) result);
+                if (!_result.isSuccessful()) {
+
+                } else {
 
                 }
-                else
-                {
+            }
+            else if (tag.equals("achievements"))
+            {
 
-                }
+            }
+            else if (tag.equals("transactions"))
+            {
+
+            }
+            else if (tag.equals("userinfo"))
+            {
+
             }
         }
         catch (Exception ex)
