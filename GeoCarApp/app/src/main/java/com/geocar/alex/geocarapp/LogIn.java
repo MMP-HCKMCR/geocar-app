@@ -22,6 +22,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     private EditText mPassword = null;
     private Button mSignIn = null;
     private TextView mRegister = null;
+    private EstimoteManager estimoteManager;
 
 
     @Override
@@ -41,6 +42,10 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
         mRegister = (TextView)findViewById(R.id.register_lnk);
         mRegister.setPaintFlags(mRegister.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mRegister.setOnClickListener(this);
+
+        estimoteManager = new EstimoteManager();
+
+        estimoteManager.startRanging(getApplicationContext());
     }
 
     @Override
@@ -89,4 +94,26 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
             LogCat.error(this, ex);
         }
     }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        estimoteManager.startRanging(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        estimoteManager.stopRanging(getApplicationContext());
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        estimoteManager.stopRanging(getApplicationContext());
+    }
+
 }
