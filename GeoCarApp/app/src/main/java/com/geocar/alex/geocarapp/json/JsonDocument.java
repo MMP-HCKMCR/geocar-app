@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Badgerati on 24/10/2015.
@@ -119,6 +120,34 @@ public class JsonDocument
         }
 
         return false;
+    }
+
+    public Calendar getCalendar(String tag)
+    {
+        try
+        {
+            String date = mJson.getString(tag);
+            int ix1 = date.indexOf('(');
+            int ix2 = date.indexOf(')');
+            int ix3 = date.indexOf('+');
+
+            if (ix3 != -1)
+            {
+                ix2 = ix3;
+            }
+
+            String subDate = date.substring(ix1 + 1, ix2);
+            long millis = Long.valueOf(subDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(millis);
+            return calendar;
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
+
+        return Calendar.getInstance();
     }
 
     @Override

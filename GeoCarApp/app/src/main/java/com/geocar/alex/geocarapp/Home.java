@@ -208,21 +208,37 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     {
         try
         {
-            if(tag.equals("logout"))
+            if (tag.equals("logout"))
             {
-                    LogOutResult _result = new LogOutResult((JsonDocument)result);
+                LogOutResult _result = new LogOutResult((JsonDocument)result);
 
-                    if (!_result.isSuccessful())
-                    {
-                        ToastHelper.show(this, "Logout unsuccessful");
-                    }
-                    else
-                    {
-                        Intent i = new Intent(this, LogIn.class);
-                        mSessionId = "";
-                        startActivity(i);
-                        finish();
-                    }
+                if (!_result.isSuccessful())
+                {
+                    ToastHelper.show(this, "Logout unsuccessful");
+                }
+                else
+                {
+                    Intent i = new Intent(this, LogIn.class);
+                    mSessionId = "";
+                    startActivity(i);
+                    finish();
+                }
+            }
+            else if (tag.equals("achievements"))
+            {
+
+            }
+            else if (tag.equals("leaderboard"))
+            {
+
+            }
+            else if (tag.equals("transactions"))
+            {
+
+            }
+            else if (tag.equals("userinfo"))
+            {
+
             }
         }
         catch (Exception ex)
