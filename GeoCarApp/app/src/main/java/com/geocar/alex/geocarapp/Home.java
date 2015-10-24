@@ -12,19 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 
+import com.geocar.alex.geocarapp.dto.LeaderboardResult;
 import com.geocar.alex.geocarapp.dto.LogOutResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
 import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 import com.geocar.alex.geocarapp.web.WebRequest;
-import com.geocar.alex.geocarapp.web.WebResponse;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,8 +108,27 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         });
     }
 
+    private void setVisible(int id)
+    {
+        RelativeLayout homeLayout = (RelativeLayout)findViewById(R.id.content_home);
+        RelativeLayout lbLayout = (RelativeLayout)findViewById(R.id.content_lb);
+        RelativeLayout achLayout = (RelativeLayout)findViewById(R.id.content_ach);
+        RelativeLayout transLayout = (RelativeLayout)findViewById(R.id.content_trans);
+
+        homeLayout.setVisibility(View.VISIBLE);
+        lbLayout.setVisibility(View.VISIBLE);
+        achLayout.setVisibility(View.VISIBLE);
+        transLayout.setVisibility(View.VISIBLE);
+
+        RelativeLayout visibleLayout = (RelativeLayout)findViewById(id);
+
+        visibleLayout.setVisibility(View.VISIBLE);
+    }
+
     private void goHome()
     {
+       setVisible(R.id.content_home);
+
         ListView recentTrans = (ListView)findViewById(R.id.recentTransactions);
 
         List<Map<String, String>> data = new ArrayList<>();
@@ -136,16 +153,28 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goLeaderboard()
     {
-        //TODO Nav draw leaderboard click
+        setVisible(R.id.content_lb);
+
+        try
+        {
+            String data = "{\"SessionId\":\"" + mSessionId + "\"}";
+            WebRequest.send("http://geocar.is-a-techie.com/api/getleaderboard", data, "getleaderboard" , this);
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
     }
 
     private void goTransactions()
     {
+        setVisible(R.id.content_trans);
         //TODO Nav draw transaction click
     }
 
     private void goAchievements()
     {
+        setVisible(R.id.content_ach);
         //TODO Nav draw achievements click
     }
 
@@ -236,19 +265,31 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         {
             if(tag.equals("logout"))
             {
-                    LogOutResult _result = new LogOutResult((JsonDocument)result);
+                LogOutResult _result = new LogOutResult((JsonDocument)result);
 
-                    if (!_result.isSuccessful())
-                    {
-                        ToastHelper.show(this, "Logout unsuccessful");
-                    }
-                    else
-                    {
-                        Intent i = new Intent(this, LogIn.class);
-                        mSessionId = "";
-                        startActivity(i);
-                        finish();
-                    }
+                if (!_result.isSuccessful())
+                {
+                    ToastHelper.show(this, "Logout unsuccessful");
+                }
+                else
+                {
+                    Intent i = new Intent(this, LogIn.class);
+                    mSessionId = "";
+                    startActivity(i);
+                    finish();
+                }
+            }
+            else if(tag.equals("getleaderboard"))
+            {
+                LeaderboardResult _result = new LeaderboardResult((JsonDocument)result);
+                if(!_result.isSuccessful())
+                {
+
+                }
+                else
+                {
+
+                }
             }
         }
         catch (Exception ex)
