@@ -1,5 +1,6 @@
 package com.geocar.alex.geocarapp.web;
 
+import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
@@ -35,9 +36,9 @@ public class WebResponse
         return mUrl;
     }
 
-    public String getBody() throws IOException
+    public JsonDocument getBody() throws IOException
     {
-        return mResponse.body().string();
+        return new JsonDocument(mResponse.body().string());
     }
 
     public String getMessage()
