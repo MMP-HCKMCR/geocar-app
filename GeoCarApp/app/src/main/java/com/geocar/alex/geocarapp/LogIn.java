@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.geocar.alex.geocarapp.dto.LoginResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
+import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 import com.geocar.alex.geocarapp.web.WebRequest;
 import com.geocar.alex.geocarapp.web.WebResponse;
@@ -83,7 +84,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     {
         try
         {
-            LoginResult _result = new LoginResult(((WebResponse) result).getBody());
+            LoginResult _result = new LoginResult(((JsonDocument)result));
 
             if (!_result.isSuccessful())
             {
@@ -97,7 +98,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
                 finish();
             }
         }
-        catch (IOException ex)
+        catch (Exception ex)
         {
             LogCat.error(this, ex);
             ToastHelper.show(this, "Login unsuccessful");
