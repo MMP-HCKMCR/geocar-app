@@ -1,5 +1,6 @@
 package com.geocar.alex.geocarapp;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +45,6 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
         mRegister.setOnClickListener(this);
 
         estimoteManager = new EstimoteManager();
-
         estimoteManager.startRanging(getApplicationContext());
     }
 
@@ -62,8 +62,8 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     }
 
     private void doSignIn()
-    {
         //TODO: Send call to backend
+        {
         LogCat.log(this, "HERE");
 
         try
@@ -78,8 +78,8 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
 
     private void doRegister()
     {
-        //TODO: Register activity
-        LogCat.log(this, "HERE2");
+        Intent i = new Intent(this, Register.class);
+        startActivity(i);
     }
 
     @Override
