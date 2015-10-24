@@ -9,6 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+
+import java.util.UUID;
+
 public class LogIn extends AppCompatActivity implements View.OnClickListener
 {
 
@@ -16,6 +21,9 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener
     private EditText mPassword = null;
     private Button mSignIn = null;
     private TextView mRegister = null;
+    private BeaconManager beaconManager;
+    private EstimoteManager estimoteManager;
+    private Region region;
 
 
     @Override
@@ -35,6 +43,12 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener
         mRegister = (TextView)findViewById(R.id.register_lnk);
         mRegister.setPaintFlags(mRegister.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mRegister.setOnClickListener(this);
+
+        estimoteManager = new EstimoteManager();
+
+        beaconManager = new BeaconManager(getApplicationContext());
+        region = new Region("Range Region", UUID.fromString("B9407F30-F5F8-466E-AFF9-25556B57FE6D"), null, null);
+        estimoteManager.startRanging(getApplicationContext());
     }
 
     @Override
@@ -60,5 +74,29 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener
     {
         //TODO: Register activity
         LogCat.log(this, "HERE2");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
+            @Override
+            public void onServiceReady() {
+                beaconManager.startRanging(region);
+            }
+        });
+    }
+
+
+    @Override
+    protected void onPause() {
+        beaconManager.stopRanging(region);
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        beaconManager.stopRanging(region);
+        super.onDestroy();
     }
 }
