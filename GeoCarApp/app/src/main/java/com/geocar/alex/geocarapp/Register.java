@@ -19,7 +19,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     }
 
     @Override
-    public <T> void onPostExecute(IAsyncTask asyncTask, T result) {
+    public <T> void onPostExecute(IAsyncTask asyncTask, T result, String tag) {
 
     }
 

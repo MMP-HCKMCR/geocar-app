@@ -1,5 +1,6 @@
 package com.geocar.alex.geocarapp;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -12,10 +13,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import com.geocar.alex.geocarapp.dto.LogOutResult;
+import com.geocar.alex.geocarapp.helpers.ToastHelper;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 import com.geocar.alex.geocarapp.web.WebRequest;
+import com.geocar.alex.geocarapp.web.WebResponse;
+
+import java.io.IOException;
 
 public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteListener
 {
@@ -26,6 +31,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     private DrawerLayout mDrawerLayout = null;
     private String mActivityTitle = "Home";
     private String mSessionId = "";
+    private EstimoteManager mEstimoteManager = null;
 
     @Override
     protected void onCreate(Bundle bundle)
@@ -46,6 +52,9 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF9400D3")));
         setActionBarName(mActivityTitle);
+
+        mEstimoteManager = new EstimoteManager(mSessionId);
+        mEstimoteManager.startRanging(getApplicationContext());
     }
 
     private void setActionBarName(String name)
@@ -95,22 +104,22 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goHome()
     {
-
+        //TODO Nav draw home click
     }
 
     private void goLeaderboard()
     {
-
+        //TODO Nav draw leaderboard click
     }
 
     private void goTransactions()
     {
-
+        //TODO Nav draw transaction click
     }
 
     private void goAchievements()
     {
-
+        //TODO Nav draw achievements click
     }
 
     private void signOut()
@@ -118,7 +127,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         try
         {
             String data = "{\"SessionId\":\"" + mSessionId + "\"}";
-            WebRequest.send("http://geocar.is-a-techie.com/api/logout", data, this);
+            WebRequest.send("http://geocar.is-a-techie.com/api/logout", data, "logout" , this);
         }
         catch (Exception ex)
         {
@@ -178,9 +187,44 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        mEstimoteManager.startRanging(getApplicationContext());
+    }
 
     @Override
-    public <T> void onPostExecute(IAsyncTask asyncTask, T result) {
+    protected void onPause()
+    {
+        super.onPause();
+        mEstimoteManager.stopRanging(getApplicationContext());
+    }
 
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        mEstimoteManager.stopRanging(getApplicationContext());
+    }
+
+    @Override
+    public <T> void onPostExecute(IAsyncTask asyncTask, T result, String tag)
+    {
+        if(tag.equals("logout")) {
+            try {
+                LogOutResult _result = new LogOutResult(((WebResponse) result).getBody());
+
+                if (!_result.isSuccessful()) {
+                    ToastHelper.show(this, "Logout unsuccessful");
+                } else {
+                    Intent i = new Intent(this, LogIn.class);
+                    mSessionId = "";
+                    startActivity(i);
+                }
+            } catch (IOException ex) {
+                LogCat.error(this, ex);
+            }
+        }
     }
 }

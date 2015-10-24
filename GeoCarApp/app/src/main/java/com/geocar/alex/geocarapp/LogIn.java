@@ -25,7 +25,6 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     private EditText mPassword = null;
     private Button mSignIn = null;
     private TextView mRegister = null;
-    private EstimoteManager estimoteManager;
 
 
     @Override
@@ -45,9 +44,6 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
         mRegister = (TextView)findViewById(R.id.register_lnk);
         mRegister.setPaintFlags(mRegister.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mRegister.setOnClickListener(this);
-
-        estimoteManager = new EstimoteManager();
-        estimoteManager.startRanging(getApplicationContext());
     }
 
     @Override
@@ -68,7 +64,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
         try
         {
             String data = "{\"EmailAddress\":\"" + mEmail.getText().toString() + "\", \"UserPassword\":\"" + mPassword.getText().toString() + "\"}";
-            WebRequest.send("http://geocar.is-a-techie.com/api/login", data, this);
+            WebRequest.send("http://geocar.is-a-techie.com/api/login", data, "login", this);
         }
         catch (Exception ex)
         {
@@ -83,7 +79,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
     }
 
     @Override
-    public <T> void onPostExecute(IAsyncTask asyncTask, T result)
+    public <T> void onPostExecute(IAsyncTask asyncTask, T result, String tag)
     {
         try
         {
@@ -104,28 +100,8 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
         catch (IOException ex)
         {
             LogCat.error(this, ex);
+            ToastHelper.show(this, "Login unsuccessful");
         }
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        //estimoteManager.startRanging(getApplicationContext());
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        //estimoteManager.stopRanging(getApplicationContext());
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        //estimoteManager.stopRanging(getApplicationContext());
     }
 
 }

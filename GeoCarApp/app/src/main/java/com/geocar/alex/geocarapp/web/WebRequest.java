@@ -10,7 +10,7 @@ import com.squareup.okhttp.RequestBody;
 public class WebRequest
 {
 
-    public static void send(String url, String data, IAsyncTask.OnPostExecuteListener listener)
+    public static void send(String url, String data, String tag, IAsyncTask.OnPostExecuteListener listener)
     {
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), data);
         Request request = new Request.Builder()
@@ -18,7 +18,7 @@ public class WebRequest
                             .post(body)
                             .build();
 
-        WebTask task = new WebTask();
+        WebTask task = new WebTask(tag);
         task.setOnPostExecuteListener(listener);
         task.executor(request);
     }

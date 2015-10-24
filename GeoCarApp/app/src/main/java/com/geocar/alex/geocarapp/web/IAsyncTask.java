@@ -8,12 +8,12 @@ public interface IAsyncTask<V, U, T>
 
     interface OnPostExecuteListener
     {
-        <T> void onPostExecute(IAsyncTask asyncTask, T result);
+        <T> void onPostExecute(IAsyncTask asyncTask, T result, String tag);
     }
 
     interface OnPreExecuteListener
     {
-        void onPreExecute(IAsyncTask asyncTask);
+        void onPreExecute(IAsyncTask asyncTask, String tag);
     }
 
     void setOnPostExecuteListener(OnPostExecuteListener listener);
