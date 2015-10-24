@@ -7,7 +7,8 @@ import android.view.View;
 
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 
-public class Register extends AppCompatActivity implements View.OnClickListener, IAsyncTask.OnPostExecuteListener {
+public class Register extends AppCompatActivity implements View.OnClickListener, IAsyncTask.OnPostExecuteListener
+{
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,7 +25,8 @@ public class Register extends AppCompatActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v)
+    {
 
     }
 }

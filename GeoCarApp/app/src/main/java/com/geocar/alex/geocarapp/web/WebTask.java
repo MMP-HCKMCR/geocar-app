@@ -1,6 +1,7 @@
 package com.geocar.alex.geocarapp.web;
 
 import com.geocar.alex.geocarapp.LogCat;
+import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -8,7 +9,7 @@ import com.squareup.okhttp.Response;
 /**
  * Created by Badgerati on 24/10/2015.
  */
-public class WebTask extends BaseAsyncTask<Request, Void, WebResponse>
+public class WebTask extends BaseAsyncTask<Request, Void, JsonDocument>
 {
 
     public WebTask(String tag)
@@ -17,7 +18,7 @@ public class WebTask extends BaseAsyncTask<Request, Void, WebResponse>
     }
 
     @Override
-    public WebResponse doInBackground(Request... requests)
+    public JsonDocument doInBackground(Request... requests)
     {
         try
         {
@@ -28,7 +29,9 @@ public class WebTask extends BaseAsyncTask<Request, Void, WebResponse>
 
             OkHttpClient client = new OkHttpClient();
             Response response = client.newCall(requests[0]).execute();
-            return new WebResponse(response, requests[0].urlString());
+            WebResponse _response = new WebResponse(response, requests[0].urlString());
+
+            return _response.getBody();
         }
         catch (Exception ex)
         {
