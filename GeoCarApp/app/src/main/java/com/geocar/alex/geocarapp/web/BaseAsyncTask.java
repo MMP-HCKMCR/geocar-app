@@ -1,0 +1,65 @@
+package com.geocar.alex.geocarapp.web;
+
+import android.os.AsyncTask;
+
+/**
+ * Created by Badgerati on 24/10/2015.
+ */
+public class BaseAsyncTask<V, U, T> extends AsyncTask<V, U, T> implements IAsyncTask<V, U, T>
+{
+
+    private OnPostExecuteListener mOnPostExecuteListener = null;
+    private OnPreExecuteListener mOnPreExecuteListener = null;
+
+
+    public BaseAsyncTask()
+    {
+        super();
+    }
+
+    @Override
+    public void setOnPostExecuteListener(IAsyncTask.OnPostExecuteListener listener)
+    {
+        mOnPostExecuteListener = listener;
+    }
+
+    @Override
+    public void setOnPreExecuteListener(IAsyncTask.OnPreExecuteListener listener)
+    {
+        mOnPreExecuteListener = listener;
+    }
+
+    @Override
+    public T doInBackground(V... params)
+    {
+        return null;
+    }
+
+    @Override
+    public void onPostExecute(T result)
+    {
+        super.onPostExecute(result);
+
+        if (mOnPostExecuteListener != null)
+        {
+            mOnPostExecuteListener.onPostExecute(this, result);
+        }
+    }
+
+    @Override
+    public void onPreExecute()
+    {
+        super.onPreExecute();
+
+        if (mOnPreExecuteListener != null)
+        {
+            mOnPreExecuteListener.onPreExecute(this);
+        }
+    }
+
+    @Override
+    public void executor(V... objects)
+    {
+        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, objects);
+    }
+}

@@ -9,7 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LogIn extends AppCompatActivity implements View.OnClickListener
+import com.geocar.alex.geocarapp.web.IAsyncTask;
+import com.geocar.alex.geocarapp.web.WebRequest;
+import com.geocar.alex.geocarapp.web.WebResponse;
+
+import java.io.IOException;
+
+public class LogIn extends AppCompatActivity implements View.OnClickListener, IAsyncTask.OnPostExecuteListener
 {
 
     private EditText mEmail = null;
@@ -54,11 +60,33 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener
     {
         //TODO: Send call to backend
         LogCat.log(this, "HERE");
+
+        try
+        {
+            WebRequest.send("http://geocar.is-a-techie.com/api/marco", "", this);
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
     }
 
     private void doRegister()
     {
         //TODO: Register activity
         LogCat.log(this, "HERE2");
+    }
+
+    @Override
+    public <T> void onPostExecute(IAsyncTask asyncTask, T result)
+    {
+        try
+        {
+            LogCat.log(this, ((WebResponse) result).getBody());
+        }
+        catch (IOException ex)
+        {
+            LogCat.error(this, ex);
+        }
     }
 }
