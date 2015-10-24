@@ -9,10 +9,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class Home extends AppCompatActivity
+import com.geocar.alex.geocarapp.web.IAsyncTask;
+import com.geocar.alex.geocarapp.web.WebRequest;
+
+public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteListener
 {
 
     private ListView mDrawerList = null;
@@ -58,14 +63,73 @@ public class Home extends AppCompatActivity
         String[] osArray = { "Home", "Leaderboard", "Transactions", "Achievements", "Sign Out" };
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                switch (position) {
+                    case 0:
+                        goHome();
+                        break;
+                    case 1:
+                        goLeaderboard();
+                        break;
+                    case 2:
+                        goTransactions();
+                        break;
+                    case 3:
+                        goAchievements();
+                        break;
+                    case 4:
+                        signOut();
+                        break;
+                    default:
+                        goHome();
+                        break;
+                }
+
+            }
+        });
     }
 
+    private void goHome()
+    {
+
+    }
+
+    private void goLeaderboard()
+    {
+
+    }
+
+    private void goTransactions()
+    {
+
+    }
+
+    private void goAchievements()
+    {
+
+    }
+
+    private void signOut()
+    {
+        try
+        {
+            String data = "{\"SessionId\":\"" + mSessionId + "\"}";
+            WebRequest.send("http://geocar.is-a-techie.com/api/logout", data, this);
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
+    }
     private void setupDrawer()
     {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
         {
-            public void onDrawerOpened(View drawerView)
-            {
+            public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 setActionBarName("Navigation");
                 invalidateOptionsMenu();
@@ -112,5 +176,11 @@ public class Home extends AppCompatActivity
     {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+
+    @Override
+    public <T> void onPostExecute(IAsyncTask asyncTask, T result) {
+
     }
 }
