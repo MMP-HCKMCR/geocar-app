@@ -98,6 +98,7 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
                 Intent i = new Intent(this, Home.class);
                 i.putExtra("SessionId", _result.sessionId);
                 startActivity(i);
+                finish();
             }
         }
         catch (IOException ex)

@@ -26,7 +26,7 @@ public class Home extends AppCompatActivity
     protected void onCreate(Bundle bundle)
     {
         super.onCreate(bundle);
-        setContentView(R.layout.content_home);
+        setContentView(R.layout.activity_home);
 
         mSessionId = getIntent().getExtras().getString("SessionId");
 
@@ -55,7 +55,7 @@ public class Home extends AppCompatActivity
 
     private void addDrawerItems()
     {
-        String[] osArray = { "Leaderboard", "Transactions", "Achievements", "Sign Out" };
+        String[] osArray = { "Home", "Leaderboard", "Transactions", "Achievements", "Sign Out" };
         mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
     }
