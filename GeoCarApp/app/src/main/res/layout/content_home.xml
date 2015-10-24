@@ -15,10 +15,46 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Holy Operating Systems, Batdroid!"
+        android:text="Current Points"
         android:textSize="24sp"
         android:gravity="center"
-        android:layout_marginTop="100dp"/>
+        android:id="@+id/textView"
+        android:layout_below="@+id/button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="{Total Points}"
+        android:id="@+id/textView2"
+        android:layout_marginTop="36dp"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh"
+        android:id="@+id/button"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Previous Transactions:"
+        android:id="@+id/textView3"
+        android:layout_above="@+id/recentTransactions"
+        android:layout_alignParentStart="true" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="500px"
+        android:id="@+id/recentTransactions"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="false" />
 
 </RelativeLayout>

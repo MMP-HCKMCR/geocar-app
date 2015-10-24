@@ -12,7 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.geocar.alex.geocarapp.dto.LogOutResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
@@ -21,6 +24,10 @@ import com.geocar.alex.geocarapp.web.WebRequest;
 import com.geocar.alex.geocarapp.web.WebResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteListener
 {
@@ -104,7 +111,26 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goHome()
     {
-        //TODO Nav draw home click
+        ListView recentTrans = (ListView)findViewById(R.id.recentTransactions);
+
+        List<Map<String, String>> data = new ArrayList<>();
+        Map<String,String> item = new HashMap<>(2);
+
+        item.put("description", "Test Description 1");
+        item.put("date", "10/24/2015");
+
+        //TODO Fill 'data' with values from UserInfo call.
+        data.add(item);
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(
+                this,
+                data,
+                android.R.layout.simple_list_item_2,
+                new String[]{"description" , "date"},
+                new int[]{android.R.id.text1,android.R.id.text2}
+        );
+
+        recentTrans.setAdapter(simpleAdapter);
     }
 
     private void goLeaderboard()
