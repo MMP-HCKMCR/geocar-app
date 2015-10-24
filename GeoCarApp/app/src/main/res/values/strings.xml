@@ -6,4 +6,6 @@
     <string name="hirerefnumber">Hire Reference Number</string>
     <string name="signin">Sign In</string>
     <string name="register">Register</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>

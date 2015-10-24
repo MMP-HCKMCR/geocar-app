@@ -97,7 +97,8 @@ public class LogIn extends AppCompatActivity implements View.OnClickListener, IA
             }
             else
             {
-                ToastHelper.show(this, "Login successful");
+                Intent i = new Intent(this, Home.class);
+                startActivity(i);
             }
         }
         catch (IOException ex)

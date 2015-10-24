@@ -6,7 +6,7 @@ package com.geocar.alex.geocarapp.dto;
 public class BaseResult
 {
 
-    public int errorId = 0;
+    public String errorMessage = "";
 
     public BaseResult()
     {
@@ -15,7 +15,7 @@ public class BaseResult
 
     public boolean isSuccessful()
     {
-        return errorId == 0;
+        return errorMessage.equals("");
     }
 
 }
