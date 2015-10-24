@@ -195,13 +195,6 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     }
 
     @Override
-    protected void onPause()
-    {
-        super.onPause();
-        mEstimoteManager.stopRanging(getApplicationContext());
-    }
-
-    @Override
     protected void onDestroy()
     {
         super.onDestroy();

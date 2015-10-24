@@ -99,13 +99,13 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
             RegisterTagResult _result = new RegisterTagResult((JsonDocument)result);
 
             Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MINUTE, _result.lockoutTime);
+            calendar.add(Calendar.MINUTE, _result.isSuccessful() ? _result.lockoutTime : 1440);
             mBeaconCache.put(tag, calendar);
 
             if (_result.isSuccessful())
             {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
-                        .setSmallIcon(android.support.v7.appcompat.R.drawable.notification_template_icon_bg)
+                        .setSmallIcon(android.support.design.R.drawable.abc_btn_rating_star_on_mtrl_alpha)
                         .setContentTitle("GeoCar Points")
                         .setContentText("You gained " + _result.pointsScored + " points! Total: " + _result.usablePoints);
                 NotificationManager manager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
