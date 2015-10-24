@@ -10,11 +10,13 @@ public class BaseAsyncTask<V, U, T> extends AsyncTask<V, U, T> implements IAsync
 
     private OnPostExecuteListener mOnPostExecuteListener = null;
     private OnPreExecuteListener mOnPreExecuteListener = null;
+    private String mTag = "";
 
 
-    public BaseAsyncTask()
+    public BaseAsyncTask(String tag)
     {
         super();
+        mTag = tag;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class BaseAsyncTask<V, U, T> extends AsyncTask<V, U, T> implements IAsync
 
         if (mOnPostExecuteListener != null)
         {
-            mOnPostExecuteListener.onPostExecute(this, result);
+            mOnPostExecuteListener.onPostExecute(this, result, mTag);
         }
     }
 
@@ -53,7 +55,7 @@ public class BaseAsyncTask<V, U, T> extends AsyncTask<V, U, T> implements IAsync
 
         if (mOnPreExecuteListener != null)
         {
-            mOnPreExecuteListener.onPreExecute(this);
+            mOnPreExecuteListener.onPreExecute(this, mTag);
         }
     }
 

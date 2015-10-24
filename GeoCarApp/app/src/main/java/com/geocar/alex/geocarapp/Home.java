@@ -21,6 +21,7 @@ public class Home extends AppCompatActivity
     private DrawerLayout mDrawerLayout = null;
     private String mActivityTitle = "Home";
     private String mSessionId = "";
+    private EstimoteManager mEstimoteManager = null;
 
     @Override
     protected void onCreate(Bundle bundle)
@@ -41,6 +42,9 @@ public class Home extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FF9400D3")));
         setActionBarName(mActivityTitle);
+
+        mEstimoteManager = new EstimoteManager(mSessionId);
+        mEstimoteManager.startRanging(getApplicationContext());
     }
 
     private void setActionBarName(String name)
@@ -112,5 +116,26 @@ public class Home extends AppCompatActivity
     {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        mEstimoteManager.startRanging(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        mEstimoteManager.stopRanging(getApplicationContext());
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        mEstimoteManager.stopRanging(getApplicationContext());
     }
 }

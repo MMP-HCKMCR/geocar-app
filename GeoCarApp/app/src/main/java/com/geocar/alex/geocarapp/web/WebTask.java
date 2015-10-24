@@ -11,9 +11,9 @@ import com.squareup.okhttp.Response;
 public class WebTask extends BaseAsyncTask<Request, Void, WebResponse>
 {
 
-    public WebTask()
+    public WebTask(String tag)
     {
-        super();
+        super(tag);
     }
 
     @Override
