@@ -83,4 +83,13 @@
         android:layout_above="@id/login_layout"
         android:layout_marginBottom="50dp"/>
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:visibility="invisible" />
+
 </RelativeLayout>
