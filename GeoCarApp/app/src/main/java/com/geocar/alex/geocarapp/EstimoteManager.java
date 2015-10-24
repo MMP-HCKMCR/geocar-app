@@ -23,7 +23,6 @@ public class EstimoteManager {
             @Override
             public void onServiceReady() {
                 beaconManager.startRanging(region);
-                LogCat.log(this, "Range Started.");
             }
         });
 
@@ -39,5 +38,9 @@ public class EstimoteManager {
                 }
             }
         });
+    }
+
+    protected void stopRanging(Context context){
+        beaconManager.stopRanging(region);
     }
 }
