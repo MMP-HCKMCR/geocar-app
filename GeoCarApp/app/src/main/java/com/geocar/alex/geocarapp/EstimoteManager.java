@@ -95,8 +95,6 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
             RegisterTagResult _result = new RegisterTagResult((JsonDocument)result);
             long millis = Calendar.getInstance().getTimeInMillis();
 
-            LogCat.log(this, result);
-
             if (_result.errorMessage != null && _result.errorMessage.toLowerCase().contains("timeout"))
             {
                 millis += 30000;
