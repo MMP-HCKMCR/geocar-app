@@ -16,39 +16,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Points"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:id="@+id/textView"
-        android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="{Total Points}"
-        android:id="@+id/textView2"
-        android:layout_marginTop="36dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Refresh"
-        android:id="@+id/button"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Previous Transactions:"
         android:id="@+id/textView3"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="71dp"
+        android:layout_below="@+id/refreshUserInfo"
         android:layout_alignParentStart="true" />
 
     <ListView
@@ -58,5 +30,50 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="false"
         android:layout_below="@+id/textView3" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Useable Points:"
+        android:id="@+id/textView6"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="{Useable Points}"
+        android:id="@+id/useablePoints"
+        android:layout_alignParentTop="true"
+        android:layout_alignEnd="@+id/refreshUserInfo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="{Current Points}"
+        android:id="@+id/currentPoints"
+        android:layout_alignTop="@+id/textView"
+        android:layout_alignStart="@+id/useablePoints" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Current Points"
+        android:id="@+id/textView"
+        android:layout_below="@+id/refreshUserInfo"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/refreshUserInfo"
+        android:src="@android:drawable/stat_notify_sync"
+        android:tint="@color/background_material_dark"
+        android:layout_below="@+id/useablePoints"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

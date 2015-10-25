@@ -78,10 +78,6 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
                         WebRequest.send("http://geocar.is-a-techie.com/api/registertag", data, id, _this);
                     }
                 }
-                else
-                {
-                    LogCat.log(this, "List is EMPTY!");
-                }
             }
         });
     }

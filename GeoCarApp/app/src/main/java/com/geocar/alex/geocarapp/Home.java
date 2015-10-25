@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
@@ -20,12 +21,15 @@ import android.widget.TextView;
 import com.geocar.alex.geocarapp.dto.LeaderboardEntryResult;
 import com.geocar.alex.geocarapp.dto.LeaderboardResult;
 import com.geocar.alex.geocarapp.dto.LogOutResult;
+import com.geocar.alex.geocarapp.dto.TransactionEntryResult;
 import com.geocar.alex.geocarapp.dto.UserInfoResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
 import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
 import com.geocar.alex.geocarapp.web.WebRequest;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +72,15 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         mEstimoteManager.startRanging(getApplicationContext());
 
         goHome();
+
+        ImageButton refreshUserInfo = (ImageButton)findViewById(R.id.refreshUserInfo);
+
+        refreshUserInfo.setOnClickListener(new ImageButton.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                goHome();
+            }
+        });
     }
 
     private void setActionBarName(String name)
@@ -150,26 +163,44 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void completeHome()
     {
+        if(mUserInfo == null)
+        {
+            return;
+        }
+
+        LogCat.log(this, mUserInfo.totalPoints);
+
         mActivityTitle = "Home";
         setActionBarName(mActivityTitle);
         setVisible(R.id.content_home);
 
         ListView recentTrans = (ListView)findViewById(R.id.recentTransactions);
+        TextView currentPoints = (TextView)findViewById(R.id.currentPoints);
+        TextView useablePoints = (TextView)findViewById(R.id.useablePoints);
 
-        List<Map<String, String>> data1 = new ArrayList<>();
-        Map<String,String> item = new HashMap<>(2);
+        currentPoints.setText(""+mUserInfo.totalPoints);
+        DecimalFormat df = new DecimalFormat("#.00");
+        double useableCurrency = ((double)mUserInfo.usablePoints * 0.005d);
+        useablePoints.setText(""+mUserInfo.usablePoints + " (£"+df.format(useableCurrency)+")");
 
-        item.put("description", "Test Description 1");
-        item.put("date", "10/24/2015");
+        List<Map<String, String>> data = new ArrayList<>();
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 
-        //TODO Fill 'data' with values from UserInfoResult call.
-        data1.add(item);
+        for (int i = 0; i < mUserInfo.last5Transactions.size(); i++)
+        {
+            TransactionEntryResult currentTrans = mUserInfo.last5Transactions.get(i);
+            Map<String,String> item = new HashMap<>(2);
+            item.put("amount", ""+ currentTrans.points+" points ("+currentTrans.transactionType+")");
+            item.put("date", simpleFormat.format(currentTrans.timeCaptured.getTime()));
+
+            data.add(item);
+        }
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(
                 this,
-                data1,
+                data,
                 android.R.layout.simple_list_item_2,
-                new String[] { "description" , "date" },
+                new String[] { "amount" , "date" },
                 new int[] { android.R.id.text1, android.R.id.text2 });
 
         recentTrans.setAdapter(simpleAdapter);
@@ -195,7 +226,16 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     {
         mActivityTitle = "Transactions";
         setVisible(R.id.content_trans);
-        //TODO Nav draw transaction click
+
+        try
+        {
+            String data = "{\"SessionId\":\"" + mSessionId + "\"}";
+            WebRequest.send("http://geocar.is-a-techie.com/api/getuserstransactions", data, "getusertransactions" , this);
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
     }
 
     private void goAchievements()
@@ -345,9 +385,9 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             {
 
             }
-            else if (tag.equals("transactions"))
+            else if (tag.equals("getusertransactions"))
             {
-
+                LogCat.log(this,result);
             }
             else if (tag.equals("userinfo"))
             {
