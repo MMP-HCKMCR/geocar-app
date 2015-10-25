@@ -66,6 +66,33 @@ public class JsonDocument
         return null;
     }
 
+    public ArrayList<String> getStringArray(String tag)
+    {
+        if (mJson == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            JSONArray array = mJson.getJSONArray(tag);
+            ArrayList<String> docs = new ArrayList<>(array.length());
+
+            for (int i = 0; i < array.length(); i++)
+            {
+                docs.add(array.getString(i)); //  new JsonDocument(array.getJSONObject(i)));
+            }
+
+            return docs;
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
+
+        return null;
+    }
+
     public JsonDocument getObject(String tag)
     {
         try

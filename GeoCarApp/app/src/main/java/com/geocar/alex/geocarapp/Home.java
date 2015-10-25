@@ -151,8 +151,6 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goHome()
     {
-        mActivityTitle = "Home";
-
         try
         {
             String data = "{\"SessionId\":\"" + mSessionId + "\"}";
@@ -166,7 +164,9 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void completeHome()
     {
-        if(mUserInfo == null)
+        mActivityTitle = "Home";
+
+        if (mUserInfo == null)
         {
             return;
         }
@@ -184,7 +184,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         currentPoints.setText(""+mUserInfo.totalPoints);
         DecimalFormat df = new DecimalFormat("#.00");
         double useableCurrency = ((double)mUserInfo.usablePoints * 0.005d);
-        useablePoints.setText(""+mUserInfo.usablePoints + " (£"+df.format(useableCurrency)+")");
+        useablePoints.setText("" + mUserInfo.usablePoints + " (£" + df.format(useableCurrency) + ")");
 
         List<Map<String, String>> data = new ArrayList<>();
         SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -211,8 +211,6 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goLeaderboard()
     {
-        mActivityTitle = "Leaderboard";
-
         try
         {
             String data = "{\"SessionId\":\"" + mSessionId + "\"}";
@@ -225,6 +223,8 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     }
     private void completeLeaderboard(LeaderboardResult result)
     {
+        mActivityTitle = "Leaderboard";
+
         TextView currentRank = (TextView)findViewById(R.id.currentRank);
         currentRank.setText(Integer.toString(result.currentRanking));
         ListView topTenList = (ListView)findViewById(R.id.topTen);
@@ -253,8 +253,6 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goTransactions()
     {
-        mActivityTitle = "Transactions";
-
         try
         {
             String data = "{\"SessionId\":\"" + mSessionId + "\"}";
@@ -268,6 +266,8 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void completeTransactions(UsersTransactionsResult result)
     {
+        mActivityTitle = "Transactions";
+
         ListView transactionList = (ListView)findViewById(R.id.transactionList);
         List<Map<String, String>> data = new ArrayList<>();
         SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
@@ -465,14 +465,13 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             else if(tag.equals("getleaderboard"))
             {
                 LeaderboardResult _result = new LeaderboardResult((JsonDocument) result);
-
-                if (!_result.isSuccessful())
+                if (_result.isSuccessful())
                 {
-                    ToastHelper.show(this, "Leaderboard retrieval unsuccessful");
+                    completeLeaderboard(_result);
                 }
                 else
                 {
-                    completeLeaderboard(_result);
+                    ToastHelper.show(this, "Leaderboard retrieval unsuccessful");
                 }
             }
             else if (tag.equals("getachievements"))
@@ -494,6 +493,10 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
                 {
                     completeTransactions(_result);
                 }
+                else
+                {
+                    ToastHelper.show(this, "Transaction retrieval unsuccessful");
+                }
             }
             else if (tag.equals("userinfo"))
             {
@@ -501,6 +504,10 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
                 if (mUserInfo.isSuccessful())
                 {
                     completeHome();
+                }
+                else
+                {
+                    ToastHelper.show(this, "Account retrieval unsuccessful");
                 }
             }
         }

@@ -116,6 +116,19 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
                 NotificationManager manager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                 manager.notify(1, builder.build());
             }
+
+            if (_result.isSuccessful() && _result.achievements != null && _result.achievements.size() > 0)
+            {
+                for (int i = 0; i < _result.achievements.size(); i++)
+                {
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
+                            .setSmallIcon(android.support.design.R.drawable.abc_btn_rating_star_on_mtrl_alpha)
+                            .setContentTitle("GeoCar Achievement Earned")
+                            .setContentText(_result.achievements.get(i));
+                    NotificationManager manager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    manager.notify(100 + i, builder.build());
+                }
+            }
         }
         catch (Exception ex)
         {
