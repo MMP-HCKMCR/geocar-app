@@ -2,7 +2,7 @@ package com.geocar.alex.geocarapp.dto;
 
 import com.geocar.alex.geocarapp.json.JsonDocument;
 
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Created by Alex on 10/25/2015.
@@ -12,7 +12,7 @@ public class LeaderboardEntryResult extends BaseResult
     public int position;
     public String firstName;
     public String surName;
-    public String lastScoreTime;
+    public Calendar lastScoreTime;
     public int score;
     public boolean isCurrentUser;
 
@@ -20,8 +20,8 @@ public class LeaderboardEntryResult extends BaseResult
     {
         this.position = document.getInt("Position");
         this.firstName = document.getString("FirstName");
-        this.surName = document.getString("SurName");
-        this.lastScoreTime = document.getString("LastScoreTime");
+        this.surName = document.getString("Surname");
+        this.lastScoreTime = document.getCalendar("LastScoreTime");
         this.score = document.getInt("Score");
         this.isCurrentUser = document.getBoolean("IsCurrentUser");
     }

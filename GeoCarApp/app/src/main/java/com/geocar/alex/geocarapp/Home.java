@@ -15,7 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
+import com.geocar.alex.geocarapp.dto.LeaderboardEntryResult;
 import com.geocar.alex.geocarapp.dto.LeaderboardResult;
 import com.geocar.alex.geocarapp.dto.LogOutResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
@@ -61,6 +63,8 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
         mEstimoteManager = new EstimoteManager(mSessionId);
         mEstimoteManager.startRanging(getApplicationContext());
+
+        goHome();
     }
 
     private void setActionBarName(String name)
@@ -115,10 +119,10 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         RelativeLayout achLayout = (RelativeLayout)findViewById(R.id.content_ach);
         RelativeLayout transLayout = (RelativeLayout)findViewById(R.id.content_trans);
 
-        homeLayout.setVisibility(View.VISIBLE);
-        lbLayout.setVisibility(View.VISIBLE);
-        achLayout.setVisibility(View.VISIBLE);
-        transLayout.setVisibility(View.VISIBLE);
+        homeLayout.setVisibility(View.GONE);
+        lbLayout.setVisibility(View.GONE);
+        achLayout.setVisibility(View.GONE);
+        transLayout.setVisibility(View.GONE);
 
         RelativeLayout visibleLayout = (RelativeLayout)findViewById(id);
 
@@ -282,10 +286,44 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             else if(tag.equals("getleaderboard"))
             {
                 LeaderboardResult _result = new LeaderboardResult((JsonDocument) result);
-                if (!_result.isSuccessful()) {
 
-                } else {
+                if (!_result.isSuccessful())
+                {
+                    ToastHelper.show(this, "Leaderboard retrieval unsuccessful");
+                }
+                else
+                {
+                    LogCat.log(this, "got leaderboard");
+                    //TODO: assign values from result to UI
+                    TextView currentRank = (TextView)findViewById(R.id.currentRank);
 
+                    currentRank.setText(Integer.toString(_result.currentRanking));
+
+                    ListView topTenList = (ListView)findViewById(R.id.topTen);
+
+                    List<Map<String, String>> data = new ArrayList<>();
+
+                    for (int i = 0; i<_result.topTen.size();i++)
+                    {
+                        LeaderboardEntryResult currentEntry =  _result.topTen.get(i);
+
+                        Map<String,String> row = new HashMap<>(2);
+
+                        row.put("description", currentEntry.position + ": "+currentEntry.firstName+" "+currentEntry.surName);
+                        row.put("score", Integer.toString(currentEntry.score));
+
+                        data.add(row);
+                    }
+
+                    SimpleAdapter simpleAdapter = new SimpleAdapter(
+                            this,
+                            data,
+                            android.R.layout.simple_list_item_2,
+                            new String[]{"description" , "score"},
+                            new int[]{android.R.id.text1,android.R.id.text2}
+                    );
+
+                    topTenList.setAdapter(simpleAdapter);
                 }
             }
             else if (tag.equals("achievements"))

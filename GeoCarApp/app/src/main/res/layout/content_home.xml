@@ -48,7 +48,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Previous Transactions:"
         android:id="@+id/textView3"
-        android:layout_above="@+id/recentTransactions"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
     <ListView
@@ -56,6 +56,7 @@
         android:layout_height="500px"
         android:id="@+id/recentTransactions"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="false" />
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/textView3" />
 
 </RelativeLayout>
