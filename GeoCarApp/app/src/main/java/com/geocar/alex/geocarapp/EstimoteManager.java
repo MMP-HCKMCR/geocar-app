@@ -99,18 +99,21 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
             RegisterTagResult _result = new RegisterTagResult((JsonDocument)result);
             long millis = Calendar.getInstance().getTimeInMillis();
 
+            LogCat.log(this, result);
+
             if (_result.errorMessage != null && _result.errorMessage.toLowerCase().contains("timeout"))
             {
                 millis += 30000;
             }
             else
             {
-                millis += ((_result.isSuccessful() ? _result.lockoutTime : 60) * 60000);
+                int lockout = (_result.lockoutTime == 0 ? 1 : _result.lockoutTime);
+                millis += ((_result.isSuccessful() ? lockout : 60) * 60000);
             }
 
             mBeaconCache.put(tag, millis);
 
-            if (_result.isSuccessful())
+            if (_result.isSuccessful() && _result.pointsScored > 0)
             {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
                         .setSmallIcon(android.support.design.R.drawable.abc_btn_rating_star_on_mtrl_alpha)

@@ -108,6 +108,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
                         break;
                 }
 
+                mDrawerLayout.closeDrawers();
             }
         });
     }
@@ -131,7 +132,8 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goHome()
     {
-       setVisible(R.id.content_home);
+        mActivityTitle = "Home";
+        setVisible(R.id.content_home);
 
         ListView recentTrans = (ListView)findViewById(R.id.recentTransactions);
 
@@ -157,6 +159,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goLeaderboard()
     {
+        mActivityTitle = "Leaderboard";
         setVisible(R.id.content_lb);
 
         try
@@ -172,12 +175,14 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goTransactions()
     {
+        mActivityTitle = "Transactions";
         setVisible(R.id.content_trans);
         //TODO Nav draw transaction click
     }
 
     private void goAchievements()
     {
+        mActivityTitle = "Achievements";
         setVisible(R.id.content_ach);
         //TODO Nav draw achievements click
     }
