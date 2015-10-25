@@ -24,7 +24,7 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
     private Region mRegion = null;
     private String mSessionId = "";
     private Context mContext = null;
-    private HashMap<String, Calendar> mBeaconCache = null;
+    private HashMap<String, Long> mBeaconCache = null;
 
 
     public EstimoteManager(String sessionId)
@@ -59,14 +59,14 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
                     {
                         Beacon beacon = list.get(i);
                         String id = beacon.getMajor() + ":" + beacon.getMajor();
-                        Calendar calendar = Calendar.getInstance();
+                        long millis = Calendar.getInstance().getTimeInMillis();
 
-                        if (mBeaconCache.containsKey(id) && mBeaconCache.get(id).after(calendar))
+                        if (mBeaconCache.containsKey(id) && mBeaconCache.get(id) > millis)
                         {
                             continue;
                         }
 
-                        mBeaconCache.put(id, Calendar.getInstance());
+                        mBeaconCache.put(id, millis);
 
                         String data = "{"
                                 + "\"SessionId\":\"" + mSessionId + "\","
@@ -97,10 +97,18 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
         try
         {
             RegisterTagResult _result = new RegisterTagResult((JsonDocument)result);
+            long millis = Calendar.getInstance().getTimeInMillis();
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MINUTE, _result.isSuccessful() ? _result.lockoutTime : 1440);
-            mBeaconCache.put(tag, calendar);
+            if (_result.errorMessage != null && _result.errorMessage.toLowerCase().contains("timeout"))
+            {
+                millis += 30000;
+            }
+            else
+            {
+                millis += ((_result.isSuccessful() ? _result.lockoutTime : 60) * 60000);
+            }
+
+            mBeaconCache.put(tag, millis);
 
             if (_result.isSuccessful())
             {
