@@ -23,6 +23,7 @@ import com.geocar.alex.geocarapp.dto.LeaderboardResult;
 import com.geocar.alex.geocarapp.dto.LogOutResult;
 import com.geocar.alex.geocarapp.dto.TransactionEntryResult;
 import com.geocar.alex.geocarapp.dto.UserInfoResult;
+import com.geocar.alex.geocarapp.dto.UsersTransactionsResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
 import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
@@ -209,7 +210,6 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     private void goLeaderboard()
     {
         mActivityTitle = "Leaderboard";
-        setVisible(R.id.content_lb);
 
         try
         {
@@ -221,21 +221,78 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             LogCat.error(this, ex);
         }
     }
+    private void completeLeaderboard(LeaderboardResult result)
+    {
+        TextView currentRank = (TextView)findViewById(R.id.currentRank);
+        currentRank.setText(Integer.toString(result.currentRanking));
+        ListView topTenList = (ListView)findViewById(R.id.topTen);
+        List<Map<String, String>> data = new ArrayList<>();
+
+        for (int i = 0; i<result.topTen.size();i++)
+        {
+            LeaderboardEntryResult currentEntry =  result.topTen.get(i);
+            Map<String,String> row = new HashMap<>(2);
+            row.put("description", currentEntry.position + ": "+currentEntry.firstName+" "+currentEntry.surName);
+            row.put("score", Integer.toString(currentEntry.score));
+            data.add(row);
+        }
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(
+                this,
+                data,
+                android.R.layout.simple_list_item_2,
+                new String[]{"description" , "score"},
+                new int[]{android.R.id.text1,android.R.id.text2}
+        );
+
+        topTenList.setAdapter(simpleAdapter);
+        setVisible(R.id.content_lb);
+    }
 
     private void goTransactions()
     {
         mActivityTitle = "Transactions";
-        setVisible(R.id.content_trans);
 
         try
         {
             String data = "{\"SessionId\":\"" + mSessionId + "\"}";
-            WebRequest.send("http://geocar.is-a-techie.com/api/getuserstransactions", data, "getusertransactions" , this);
+            WebRequest.send("http://geocar.is-a-techie.com/api/getusertransactions", data, "getusertransactions" , this);
         }
         catch (Exception ex)
         {
             LogCat.error(this, ex);
         }
+    }
+
+    private void completeTransactions(UsersTransactionsResult result)
+    {
+        ListView transactionList = (ListView)findViewById(R.id.transactionList);
+        List<Map<String, String>> data = new ArrayList<>();
+        SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+
+        LogCat.log(this, "SIZE: "+result.transactions);
+
+        for (int i = 0; i<result.transactions.size(); i++)
+        {
+            TransactionEntryResult currentTrans =  result.transactions.get(i);
+            Map<String,String> item = new HashMap<>(2);
+            item.put("amount", ""+ currentTrans.points+" points ("+currentTrans.transactionType+")");
+            item.put("date", simpleFormat.format(currentTrans.timeCaptured.getTime()));
+
+            data.add(item);
+        }
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(
+                this,
+                data,
+                android.R.layout.simple_list_item_2,
+                new String[]{"amount" , "date"},
+                new int[]{android.R.id.text1,android.R.id.text2}
+        );
+
+        transactionList.setAdapter(simpleAdapter);
+
+        setVisible(R.id.content_trans);
     }
 
     private void goAchievements()
@@ -356,29 +413,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
                 }
                 else
                 {
-                    TextView currentRank = (TextView)findViewById(R.id.currentRank);
-                    currentRank.setText(Integer.toString(_result.currentRanking));
-                    ListView topTenList = (ListView)findViewById(R.id.topTen);
-                    List<Map<String, String>> data = new ArrayList<>();
-
-                    for (int i = 0; i<_result.topTen.size();i++)
-                    {
-                        LeaderboardEntryResult currentEntry =  _result.topTen.get(i);
-                        Map<String,String> row = new HashMap<>(2);
-                        row.put("description", currentEntry.position + ": "+currentEntry.firstName+" "+currentEntry.surName);
-                        row.put("score", Integer.toString(currentEntry.score));
-                        data.add(row);
-                    }
-
-                    SimpleAdapter simpleAdapter = new SimpleAdapter(
-                            this,
-                            data,
-                            android.R.layout.simple_list_item_2,
-                            new String[]{"description" , "score"},
-                            new int[]{android.R.id.text1,android.R.id.text2}
-                    );
-
-                    topTenList.setAdapter(simpleAdapter);
+                    completeLeaderboard(_result);
                 }
             }
             else if (tag.equals("achievements"))
@@ -387,7 +422,11 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             }
             else if (tag.equals("getusertransactions"))
             {
-                LogCat.log(this,result);
+                UsersTransactionsResult _result = new UsersTransactionsResult((JsonDocument) result);
+                if(_result.isSuccessful())
+                {
+                    completeTransactions(_result);
+                }
             }
             else if (tag.equals("userinfo"))
             {
