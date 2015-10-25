@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.geocar.alex.geocarapp.dto.AchievementEntryResult;
+import com.geocar.alex.geocarapp.dto.AchievementResult;
 import com.geocar.alex.geocarapp.dto.LeaderboardEntryResult;
 import com.geocar.alex.geocarapp.dto.LeaderboardResult;
 import com.geocar.alex.geocarapp.dto.LogOutResult;
@@ -240,9 +242,66 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
     private void goAchievements()
     {
+        try
+        {
+            String data = "{\"SessionId\":\"" + mSessionId + "\"}";
+            WebRequest.send("http://geocar.is-a-techie.com/api/getachievements", data, "getachievements" , this);
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
+    }
+
+    private void completeAchievements(AchievementResult result)
+    {
         mActivityTitle = "Achievements";
         setVisible(R.id.content_ach);
-        //TODO Nav draw achievements click
+
+        ListView userAchievementList = (ListView)findViewById(R.id.userAchievementList);
+        List<Map<String, String>> data1 = new ArrayList<>();
+
+        for (int i = 0; i < result.usersAchievements.size(); i++)
+        {
+            AchievementEntryResult currentEntry = result.usersAchievements.get(i);
+            Map<String,String> row = new HashMap<>(2);
+            row.put("name", currentEntry.name);
+            row.put("description", currentEntry.description);
+            data1.add(row);
+        }
+
+        SimpleAdapter simpleAdapter1 = new SimpleAdapter(
+                this,
+                data1,
+                android.R.layout.simple_list_item_2,
+                new String[]{"name" , "description"},
+                new int[]{android.R.id.text1,android.R.id.text2}
+        );
+
+        userAchievementList.setAdapter(simpleAdapter1);
+
+
+        ListView allAchievementList = (ListView)findViewById(R.id.allAchievementList);
+        List<Map<String, String>> data2 = new ArrayList<>();
+
+        for (int i = 0; i < result.remainingAchievements.size(); i++)
+        {
+            AchievementEntryResult currentEntry = result.remainingAchievements.get(i);
+            Map<String,String> row = new HashMap<>(2);
+            row.put("name", currentEntry.name);
+            row.put("description", currentEntry.description);
+            data2.add(row);
+        }
+
+        SimpleAdapter simpleAdapter2 = new SimpleAdapter(
+                this,
+                data2,
+                android.R.layout.simple_list_item_2,
+                new String[]{"name" , "description"},
+                new int[]{android.R.id.text1,android.R.id.text2}
+        );
+
+        allAchievementList.setAdapter(simpleAdapter2);
     }
 
     private void signOut()
@@ -381,9 +440,17 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
                     topTenList.setAdapter(simpleAdapter);
                 }
             }
-            else if (tag.equals("achievements"))
+            else if (tag.equals("getachievements"))
             {
-
+                AchievementResult _result = new AchievementResult((JsonDocument)result);
+                if (_result.isSuccessful())
+                {
+                    completeAchievements(_result);
+                }
+                else
+                {
+                    ToastHelper.show(this, "Achievement retrieval unsuccessful");
+                }
             }
             else if (tag.equals("getusertransactions"))
             {
