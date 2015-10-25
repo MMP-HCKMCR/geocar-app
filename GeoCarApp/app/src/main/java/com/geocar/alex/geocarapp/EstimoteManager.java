@@ -15,6 +15,7 @@ import com.geocar.alex.geocarapp.web.WebRequest;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
@@ -119,6 +120,8 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
 
             if (_result.isSuccessful() && _result.achievements != null && _result.achievements.size() > 0)
             {
+                Random random = new Random(Calendar.getInstance().getTimeInMillis());
+
                 for (int i = 0; i < _result.achievements.size(); i++)
                 {
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext)
@@ -126,7 +129,7 @@ public class EstimoteManager implements IAsyncTask.OnPostExecuteListener
                             .setContentTitle("GeoCar Achievement Earned")
                             .setContentText(_result.achievements.get(i));
                     NotificationManager manager = (NotificationManager)mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                    manager.notify(100 + i, builder.build());
+                    manager.notify(100 + random.nextInt(4), builder.build());
                 }
             }
         }

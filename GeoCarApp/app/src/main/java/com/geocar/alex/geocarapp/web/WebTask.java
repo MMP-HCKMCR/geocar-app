@@ -6,9 +6,6 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import java.util.Calendar;
-import java.util.Random;
-
 /**
  * Created by Badgerati on 24/10/2015.
  */
@@ -30,8 +27,6 @@ public class WebTask extends BaseAsyncTask<Request, Void, JsonDocument>
                 return null;
             }
 
-            Random random = new Random(Calendar.getInstance().getTimeInMillis());
-            Thread.sleep(1000 + random.nextInt(1000));
             OkHttpClient client = new OkHttpClient();
             Response response = client.newCall(requests[0]).execute();
             WebResponse _response = new WebResponse(response, requests[0].urlString());

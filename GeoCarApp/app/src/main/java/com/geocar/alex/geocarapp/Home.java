@@ -174,8 +174,8 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         LogCat.log(this, mUserInfo.totalPoints);
 
         mActivityTitle = "Home";
-        setActionBarName(mActivityTitle);
         setVisible(R.id.content_home);
+        setActionBarName(mActivityTitle);
 
         ListView recentTrans = (ListView)findViewById(R.id.recentTransactions);
         TextView currentPoints = (TextView)findViewById(R.id.currentPoints);
@@ -249,6 +249,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
 
         topTenList.setAdapter(simpleAdapter);
         setVisible(R.id.content_lb);
+        setActionBarName(mActivityTitle);
     }
 
     private void goTransactions()
@@ -295,6 +296,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
         transactionList.setAdapter(simpleAdapter);
 
         setVisible(R.id.content_trans);
+        setActionBarName(mActivityTitle);
     }
 
     private void goAchievements()
@@ -314,6 +316,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     {
         mActivityTitle = "Achievements";
         setVisible(R.id.content_ach);
+        setActionBarName(mActivityTitle);
 
         ListView userAchievementList = (ListView)findViewById(R.id.userAchievementList);
         List<Map<String, String>> data1 = new ArrayList<>();
