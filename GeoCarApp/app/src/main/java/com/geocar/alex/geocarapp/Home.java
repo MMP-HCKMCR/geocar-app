@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.geocar.alex.geocarapp.dto.LeaderboardEntryResult;
 import com.geocar.alex.geocarapp.dto.LeaderboardResult;
 import com.geocar.alex.geocarapp.dto.LogOutResult;
+import com.geocar.alex.geocarapp.dto.UserInfoResult;
 import com.geocar.alex.geocarapp.helpers.ToastHelper;
 import com.geocar.alex.geocarapp.json.JsonDocument;
 import com.geocar.alex.geocarapp.web.IAsyncTask;
@@ -40,6 +41,8 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     private String mActivityTitle = "Home";
     private String mSessionId = "";
     private EstimoteManager mEstimoteManager = null;
+    private UserInfoResult mUserInfo = null;
+
 
     @Override
     protected void onCreate(Bundle bundle)
@@ -71,7 +74,7 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     {
         if (name.toLowerCase().equals("home"))
         {
-            name = "Welcome Someone";
+            name = "Welcome " + (mUserInfo == null ? "" : mUserInfo.firstName);
         }
 
         getSupportActionBar().setTitle(name);
@@ -133,26 +136,41 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
     private void goHome()
     {
         mActivityTitle = "Home";
+
+        try
+        {
+            String data = "{\"SessionId\":\"" + mSessionId + "\"}";
+            WebRequest.send("http://geocar.is-a-techie.com/api/userinfo", data, "userinfo" , this);
+        }
+        catch (Exception ex)
+        {
+            LogCat.error(this, ex);
+        }
+    }
+
+    private void completeHome()
+    {
+        mActivityTitle = "Home";
+        setActionBarName(mActivityTitle);
         setVisible(R.id.content_home);
 
         ListView recentTrans = (ListView)findViewById(R.id.recentTransactions);
 
-        List<Map<String, String>> data = new ArrayList<>();
+        List<Map<String, String>> data1 = new ArrayList<>();
         Map<String,String> item = new HashMap<>(2);
 
         item.put("description", "Test Description 1");
         item.put("date", "10/24/2015");
 
-        //TODO Fill 'data' with values from UserInfo call.
-        data.add(item);
+        //TODO Fill 'data' with values from UserInfoResult call.
+        data1.add(item);
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(
                 this,
-                data,
+                data1,
                 android.R.layout.simple_list_item_2,
-                new String[]{"description" , "date"},
-                new int[]{android.R.id.text1,android.R.id.text2}
-        );
+                new String[] { "description" , "date" },
+                new int[] { android.R.id.text1, android.R.id.text2 });
 
         recentTrans.setAdapter(simpleAdapter);
     }
@@ -298,25 +316,17 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
                 }
                 else
                 {
-                    LogCat.log(this, "got leaderboard");
-                    //TODO: assign values from result to UI
                     TextView currentRank = (TextView)findViewById(R.id.currentRank);
-
                     currentRank.setText(Integer.toString(_result.currentRanking));
-
                     ListView topTenList = (ListView)findViewById(R.id.topTen);
-
                     List<Map<String, String>> data = new ArrayList<>();
 
                     for (int i = 0; i<_result.topTen.size();i++)
                     {
                         LeaderboardEntryResult currentEntry =  _result.topTen.get(i);
-
                         Map<String,String> row = new HashMap<>(2);
-
                         row.put("description", currentEntry.position + ": "+currentEntry.firstName+" "+currentEntry.surName);
                         row.put("score", Integer.toString(currentEntry.score));
-
                         data.add(row);
                     }
 
@@ -341,7 +351,11 @@ public class Home extends AppCompatActivity implements IAsyncTask.OnPostExecuteL
             }
             else if (tag.equals("userinfo"))
             {
-
+                mUserInfo = new UserInfoResult((JsonDocument)result);
+                if (mUserInfo.isSuccessful())
+                {
+                    completeHome();
+                }
             }
         }
         catch (Exception ex)
